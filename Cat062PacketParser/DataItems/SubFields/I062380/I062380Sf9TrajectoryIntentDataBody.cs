@@ -1,6 +1,6 @@
 using AsterixCore;
 
-namespace Cat062PacketParser.DataItems.SubFields;
+namespace Cat062PacketParser.DataItems.SubFields.I062380;
 
 public class I062380Sf9TrajectoryIntentDataBody : FixLengthDataItem
 {
@@ -12,5 +12,7 @@ public class I062380Sf9TrajectoryIntentDataBody : FixLengthDataItem
         IsMandatory = false;
         
         LoadRawData(TrajectoryIntentDataBodyLength, buffer, offset);
+        
+        // TODO
     }
 }

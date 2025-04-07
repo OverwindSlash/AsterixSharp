@@ -1,10 +1,13 @@
 using AsterixCore;
+using Utils;
 
-namespace Cat062PacketParser.DataItems.SubFields;
+namespace Cat062PacketParser.DataItems.SubFields.I062380;
 
 public class I062380Sf1TargetAddress : FixLengthDataItem
 {
     public const int TargetAddressLength = 3;
+    
+    public int TargetAddress { get; private set; }
 
     public I062380Sf1TargetAddress(byte[] buffer, int offset)
     {
@@ -12,5 +15,8 @@ public class I062380Sf1TargetAddress : FixLengthDataItem
         IsMandatory = false;
         
         LoadRawData(TargetAddressLength, buffer, offset);
+
+        var addrValue = (int)BitOperations.ConvertBitsBigEndianUnsigned(RawData, 0, 24);
+        TargetAddress = addrValue;
     }
 }

@@ -1,6 +1,6 @@
 using AsterixCore;
 
-namespace Cat062PacketParser.DataItems.SubFields;
+namespace Cat062PacketParser.DataItems.SubFields.I062290;
 
 public class I062290Sf2PsrAge : FixLengthDataItem
 {

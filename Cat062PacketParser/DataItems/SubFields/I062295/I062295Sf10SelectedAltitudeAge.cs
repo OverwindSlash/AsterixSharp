@@ -1,6 +1,6 @@
 using AsterixCore;
 
-namespace Cat062PacketParser.DataItems.SubFields;
+namespace Cat062PacketParser.DataItems.SubFields.I062295;
 
 public class I062295Sf10SelectedAltitudeAge : FixLengthDataItem
 {

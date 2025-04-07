@@ -3,13 +3,13 @@ using Cat062PacketParser.DataItems;
 
 namespace Cat062HeaderTests;
 
-public class Cat062DataItemsTests
+public class Cat062DataItemsTestAll
 {
     private byte[] _buffer;
 
     private byte[] LoadCambridgePixelSimulatorData()
     {
-        return File.ReadAllBytes("data/cat062-boat3.bin"); 
+        return File.ReadAllBytes("data/cat062-all.bin"); 
     }
 
     [Test]
@@ -21,10 +21,13 @@ public class Cat062DataItemsTests
         var cat062DataItems = new Cat062DataItems(cat062Header, _buffer, cat062Header.DataBlockLength);
         
         Assert.That(cat062DataItems.SourceIdentifier, Is.Not.Null);
+        Assert.That(cat062DataItems.ServiceIdentification, Is.Not.Null);
         Assert.That(cat062DataItems.TimeOfTrackInfo, Is.Not.Null);
         Assert.That(cat062DataItems.PositionInWgs84, Is.Not.Null);
         Assert.That(cat062DataItems.PositionInCartesian, Is.Not.Null);
         Assert.That(cat062DataItems.TrackVelocityInCartesian, Is.Not.Null);
+        Assert.That(cat062DataItems.AccelerationInCartesian, Is.Not.Null);
+        
         Assert.That(cat062DataItems.TargetIdentification, Is.Not.Null);
         Assert.That(cat062DataItems.AircraftDerivedData, Is.Not.Null);
         Assert.That(cat062DataItems.TrackNumber, Is.Not.Null);

@@ -1,7 +1,7 @@
 using AsterixCore;
 using Utils;
 
-namespace Cat062PacketParser.DataItems.SubFields;
+namespace Cat062PacketParser.DataItems.SubFields.I062380;
 
 public class I062380Sf8TrajectoryIntentStatus : FixLengthDataItem
 {
