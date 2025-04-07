@@ -1,10 +1,15 @@
 using AsterixCore;
+using Utils;
 
 namespace Cat062PacketParser.DataItems.SubFields.I062500;
 
 public class I062500Sf3EstimatedAccuracyOfTrackPositionInWgs84 : FixLengthDataItem
 {
     public const int EstimatedAccuracyOfTrackPositionInWgs84Length = 4;
+    public const double LSB = 180.0 / 33554432;
+
+    public double ApwLatitude { get; private set; }
+    public double ApwLongitude { get; private set; }
 
     public I062500Sf3EstimatedAccuracyOfTrackPositionInWgs84(byte[] buffer, int offset)
     {
@@ -12,7 +17,11 @@ public class I062500Sf3EstimatedAccuracyOfTrackPositionInWgs84 : FixLengthDataIt
         IsMandatory = false;
         
         LoadRawData(EstimatedAccuracyOfTrackPositionInWgs84Length, buffer, offset);
-        
-        // TODO
+
+        var latValue = BitOperations.ConvertBitsBigEndianSigned(RawData, 0, 16);
+        var lonValue = BitOperations.ConvertBitsBigEndianSigned(RawData, 16, 16);
+
+        ApwLatitude = latValue * LSB;
+        ApwLongitude = lonValue * LSB;
     }
 }

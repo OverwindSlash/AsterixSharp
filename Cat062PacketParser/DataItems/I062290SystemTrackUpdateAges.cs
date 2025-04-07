@@ -44,6 +44,7 @@ public class I062290SystemTrackUpdateAges : ExtentableDataItem
         IsMandatory = false;
         
         ParseExtentableData(MaxSystemTrackUpdateAgesLength, buffer, offset);
+        offset += Length;
 
         ExtractSubFieldFlag();
 
@@ -51,60 +52,70 @@ public class I062290SystemTrackUpdateAges : ExtentableDataItem
         {
             TrackAge = new I062290Sf1TrackAge(buffer, offset);
             offset += TrackAge.Length;
+            Length += TrackAge.Length;
         }
 
         if (HasPsr)
         {
             PsrAge = new I062290Sf2PsrAge(buffer, offset);
             offset += PsrAge.Length;
+            Length += PsrAge.Length;
         }
 
         if (HasSsr)
         {
             SsrAge = new I062290Sf3SsrAge(buffer, offset);
             offset += SsrAge.Length;
+            Length += SsrAge.Length;
         }
 
         if (HasMds)
         {
             ModeSAge = new I062290Sf4ModeSAge(buffer, offset);
             offset += ModeSAge.Length;
+            Length += ModeSAge.Length;
         }
 
         if (HasAds)
         {
             AdscAge = new I062290Sf5AdscAge(buffer, offset);
             offset += AdscAge.Length;
+            Length += AdscAge.Length;
         }
 
         if (HasEs)
         {
             EsAge = new I062290Sf6EsAge(buffer, offset);
             offset += EsAge.Length;
+            Length += EsAge.Length;
         }
 
         if (HasVdl)
         {
             VdlAge = new I062290Sf7VdlAge(buffer, offset);
             offset += VdlAge.Length;
+            Length += VdlAge.Length;
         }
 
         if (HasUat)
         {
             UatAge = new I062290Sf8UatAge(buffer, offset);
             offset += UatAge.Length;
+            Length += UatAge.Length;
         }
 
         if (HasLop)
         {
             LoopAge = new I062290Sf9LoopAge(buffer, offset);
             offset += LoopAge.Length;
+            Length += LoopAge.Length;
         }
 
         if (HasMlt)
         {
             MultilaterationAge = new I062290Sf10MultilaterationAge(buffer, offset);
             offset += MultilaterationAge.Length;
+            Length += MultilaterationAge.Length;
         }
     }
 

@@ -1,10 +1,14 @@
 using AsterixCore;
+using Utils;
 
 namespace Cat062PacketParser.DataItems.SubFields.I062295;
 
 public class I062295Sf19TrackAngleRateAge : FixLengthDataItem
 {
     public const int TrackAngleRateAgeLength = 1;
+    public const double LSB = 0.25;
+
+    public double Tar { get; private set; }
 
     public I062295Sf19TrackAngleRateAge(byte[] buffer, int offset)
     {
@@ -12,7 +16,8 @@ public class I062295Sf19TrackAngleRateAge : FixLengthDataItem
         IsMandatory = false;
         
         LoadRawData(TrackAngleRateAgeLength, buffer, offset);
-        
-        // TODO
+
+        var tarValue = BitOperations.ConvertBitsBigEndianUnsigned(RawData, 0, 8);
+        Tar = tarValue * LSB;
     }
 }
