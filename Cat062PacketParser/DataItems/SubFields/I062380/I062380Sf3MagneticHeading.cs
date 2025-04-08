@@ -6,7 +6,7 @@ namespace Cat062PacketParser.DataItems.SubFields.I062380;
 public class I062380Sf3MagneticHeading : FixLengthDataItem
 {
     public const int MagneticHeadingLength = 2;
-    public const double LSB = 0.00549316;
+    public const double LSB = 0.0054931640625;
     
     public double MagneticHeading { get; private set; }
 

@@ -1,15 +1,16 @@
 using Cat062PacketParser;
 using Cat062PacketParser.DataItems;
+using Cat062PacketParser.DataItems.SubFields.I062380;
 
 namespace Cat062DataItemsTests;
 
-public class Cat062DataItemsTestAll_1
+public class Cat062DataItemsTestAll_2
 {
     private byte[] _buffer;
 
     private byte[] LoadCambridgePixelSimulatorData()
     {
-        return File.ReadAllBytes("data/cat062-all-1.bin"); 
+        return File.ReadAllBytes("data/cat062-all-2.bin"); 
     }
 
     [Test]
@@ -29,6 +30,7 @@ public class Cat062DataItemsTestAll_1
         Assert.That(cat062DataItems.AccelerationInCartesian, Is.Not.Null);
         
         Assert.That(cat062DataItems.TrackMode3ACode, Is.Not.Null);
+        Assert.That(cat062DataItems.AircraftDerivedData, Is.Not.Null);
         Assert.That(cat062DataItems.TrackNumber, Is.Not.Null);
         Assert.That(cat062DataItems.TrackStatus, Is.Not.Null);
         Assert.That(cat062DataItems.SystemTrackUpdateAges, Is.Not.Null);
@@ -39,7 +41,6 @@ public class Cat062DataItemsTestAll_1
         Assert.That(cat062DataItems.TrackGeometricAltitude, Is.Not.Null);
         Assert.That(cat062DataItems.TrackBarometricAltitude, Is.Not.Null);
         Assert.That(cat062DataItems.RateOfClimbDescent, Is.Not.Null);
-        Assert.That(cat062DataItems.TrackMode2Code, Is.Not.Null);
         Assert.That(cat062DataItems.ComposedTrackNumber, Is.Not.Null);
         Assert.That(cat062DataItems.EstimatedAccuracies, Is.Not.Null);
         Assert.That(cat062DataItems.MeasuredInformation, Is.Not.Null);
@@ -103,8 +104,8 @@ public class Cat062DataItemsTestAll_1
         
         Assert.That(positionInWgs84.Name, Is.EqualTo("I062/105, Calculated Position In WGS-84 Co-ordinates"));
         Assert.That(positionInWgs84.IsMandatory, Is.False);
-        Assert.That(positionInWgs84.Latitude, Is.EqualTo(49.1813331842422).Within(0.0000000001));
-        Assert.That(positionInWgs84.Longitude, Is.EqualTo(2.07998871803284).Within(0.0000000001));
+        Assert.That(positionInWgs84.Latitude, Is.EqualTo(52.7982866764069).Within(0.0000000001));
+        Assert.That(positionInWgs84.Longitude, Is.EqualTo(2.49170780181885).Within(0.0000000001));
     }
     
     [Test]
@@ -119,8 +120,8 @@ public class Cat062DataItemsTestAll_1
         
         Assert.That(positionInCartesian.Name, Is.EqualTo("I062/100, Calculated Track Position. (Cartesian)"));
         Assert.That(positionInCartesian.IsMandatory, Is.False);
-        Assert.That(positionInCartesian.X, Is.EqualTo(261930.5));
-        Assert.That(positionInCartesian.Y, Is.EqualTo(-315025));
+        Assert.That(positionInCartesian.X, Is.EqualTo(269920.5));
+        Assert.That(positionInCartesian.Y, Is.EqualTo(88550));
     }
     
     [Test]
@@ -135,8 +136,8 @@ public class Cat062DataItemsTestAll_1
         
         Assert.That(velocityInCartesian.Name, Is.EqualTo("I062/185, Calculated Track Velocity (Cartesian)"));
         Assert.That(velocityInCartesian.IsMandatory, Is.False);
-        Assert.That(velocityInCartesian.Vx, Is.EqualTo(-56));
-        Assert.That(velocityInCartesian.Vy, Is.EqualTo(146.75));
+        Assert.That(velocityInCartesian.Vx, Is.EqualTo(275.25));
+        Assert.That(velocityInCartesian.Vy, Is.EqualTo(-57));
     }
 
     [Test]
@@ -170,18 +171,58 @@ public class Cat062DataItemsTestAll_1
         Assert.That(trackMode3ACode.IsCodeNotValidated, Is.False);
         Assert.That(trackMode3ACode.IsGarbledCode, Is.False);
         Assert.That(trackMode3ACode.HasChanged, Is.False);
-        Assert.That(trackMode3ACode.ReplyA4, Is.True);
-        Assert.That(trackMode3ACode.ReplyA2, Is.False);
+        Assert.That(trackMode3ACode.ReplyA4, Is.False);
+        Assert.That(trackMode3ACode.ReplyA2, Is.True);
         Assert.That(trackMode3ACode.ReplyA1, Is.True);
         Assert.That(trackMode3ACode.ReplyB4, Is.True);
-        Assert.That(trackMode3ACode.ReplyB2, Is.True);
+        Assert.That(trackMode3ACode.ReplyB2, Is.False);
         Assert.That(trackMode3ACode.ReplyB1, Is.False);
-        Assert.That(trackMode3ACode.ReplyC4, Is.False);
+        Assert.That(trackMode3ACode.ReplyC4, Is.True);
         Assert.That(trackMode3ACode.ReplyC2, Is.False);
         Assert.That(trackMode3ACode.ReplyC1, Is.False);
-        Assert.That(trackMode3ACode.ReplyD4, Is.False);
+        Assert.That(trackMode3ACode.ReplyD4, Is.True);
         Assert.That(trackMode3ACode.ReplyD2, Is.True);
         Assert.That(trackMode3ACode.ReplyD1, Is.False);
+    }
+
+    [Test]
+    public void TestGenerateCat062DataItemsWithCambridgePixelSimulatorData_CheckAircraftDerivedData()
+    {
+        _buffer = LoadCambridgePixelSimulatorData();
+
+        var cat062Header = new Cat062Header(_buffer);
+        var cat062DataItems = new Cat062DataItems(cat062Header, _buffer, cat062Header.DataBlockLength);
+
+        var aircraftDerivedData = cat062DataItems.AircraftDerivedData;
+
+        Assert.That(aircraftDerivedData.Name, Is.EqualTo("I062/380, Aircraft Derived Data"));
+        Assert.That(aircraftDerivedData.IsMandatory, Is.False);
+
+        Assert.That(aircraftDerivedData.TargetAddress.TargetAddress, Is.EqualTo(12604406));
+        Assert.That(aircraftDerivedData.TargetIdentification.TargetIdentification, Is.EqualTo("ACA844  "));
+        Assert.That(aircraftDerivedData.MagneticHeading.MagneticHeading, Is.EqualTo(111.26953125).Within(0.0000001));
+        Assert.That(aircraftDerivedData.TrueAirspeed.TrueAirSpeed, Is.EqualTo(448));
+        Assert.That(aircraftDerivedData.FinalStateSelectedAltitude.IsManageVerticalModeActive, Is.False);
+        Assert.That(aircraftDerivedData.FinalStateSelectedAltitude.IsAltitudeHoldActive, Is.False);
+        Assert.That(aircraftDerivedData.FinalStateSelectedAltitude.IsApproachModeActive, Is.False);
+        Assert.That(aircraftDerivedData.FinalStateSelectedAltitude.Altitude, Is.EqualTo(39000));
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.CommCapability, Is.EqualTo(I062380Sf10CommAcasFlightStatus.CommCapabilityTypes.CommAAndCommB));
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.FlightStatus, Is.EqualTo(I062380Sf10CommAcasFlightStatus.FlightStatusTypes.NoAlertNoSpiAircraftAirborne));
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.IsSpecificServiceCapability, Is.True);
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.IsAltitudeReportingCapability, Is.True);
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.IsAircraftIdentificationCapability, Is.True);
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.B1A, Is.True);
+        Assert.That(aircraftDerivedData.CommAcasFlightStatus.B1B, Is.EqualTo(6));
+        Assert.That(aircraftDerivedData.BarometricVerticalRate.Bvr, Is.EqualTo(-318.75));
+        Assert.That(aircraftDerivedData.GeometricVerticalRate.Gvr, Is.EqualTo(-62.5));
+        Assert.That(aircraftDerivedData.RollAngle.Ran, Is.EqualTo(14.41));
+        Assert.That(aircraftDerivedData.TrackAngleRate.TurnIndicator, Is.EqualTo(I062380Sf16TrackAngleRate.TurnIndicatorTypes.NotAvailable));
+        Assert.That(aircraftDerivedData.TrackAngleRate.RateOfTurn, Is.EqualTo(0.5));
+        Assert.That(aircraftDerivedData.TrackAngle.Tan, Is.EqualTo(103.53515625));
+        Assert.That(aircraftDerivedData.GroundSpeed.Gsp, Is.EqualTo(0.151123046875));
+        Assert.That(aircraftDerivedData.IndicatedAirspeedSubField.Ias, Is.EqualTo(247));
+        Assert.That(aircraftDerivedData.MachNumber.Mac, Is.EqualTo(0.8));
+        Assert.That(aircraftDerivedData.BarometricPressureSetting.Bps, Is.EqualTo(225));
     }
 
     [Test]
@@ -196,7 +237,7 @@ public class Cat062DataItemsTestAll_1
 
         Assert.That(trackNumber.Name, Is.EqualTo("I062/040, Track Number"));
         Assert.That(trackNumber.IsMandatory, Is.True);
-        Assert.That(trackNumber.TrackNumber, Is.EqualTo(4542));
+        Assert.That(trackNumber.TrackNumber, Is.EqualTo(4322));
     }
 
     [Test]
@@ -212,16 +253,16 @@ public class Cat062DataItemsTestAll_1
         Assert.That(trackStatus.Name, Is.EqualTo("I062/080, Track Status"));
         Assert.That(trackStatus.IsMandatory, Is.True);
 
-        Assert.That(trackStatus.IsMonoSensorTrack, Is.True);
+        Assert.That(trackStatus.IsMonoSensorTrack, Is.False);
         Assert.That(trackStatus.IsSpiPresent, Is.False);
         Assert.That(trackStatus.IsGeoAltitudeMoreReliable, Is.False);
-        Assert.That(trackStatus.SourceOfCalculatedTrack, Is.EqualTo(I062080TrackStatus.SourceTrackTypes.DefaultHeight));
+        Assert.That(trackStatus.SourceOfCalculatedTrack, Is.EqualTo(I062080TrackStatus.SourceTrackTypes.Triangulation));
         Assert.That(trackStatus.IsTentativeTrack, Is.False);
         Assert.That(trackStatus.Fx1, Is.True);
 
         Assert.That(trackStatus.IsActualTrack, Is.False);
         Assert.That(trackStatus.IsTse, Is.False);
-        Assert.That(trackStatus.IsTsb, Is.True);
+        Assert.That(trackStatus.IsTsb, Is.False);
         Assert.That(trackStatus.IsFlightPlanCorrelated, Is.False);
         Assert.That(trackStatus.IsAff, Is.False);
         Assert.That(trackStatus.IsSlaveTrackPromotion, Is.False);
@@ -236,9 +277,9 @@ public class Cat062DataItemsTestAll_1
         Assert.That(trackStatus.Fx3, Is.True);
 
         Assert.That(trackStatus.IsCst, Is.False);
-        Assert.That(trackStatus.IsPsr, Is.True);
+        Assert.That(trackStatus.IsPsr, Is.False);
         Assert.That(trackStatus.IsSsr, Is.False);
-        Assert.That(trackStatus.IsMds, Is.True);
+        Assert.That(trackStatus.IsMds, Is.False);
         Assert.That(trackStatus.IsAds, Is.True);
         Assert.That(trackStatus.IsSuc, Is.False);
         Assert.That(trackStatus.IsAac, Is.False);
@@ -272,9 +313,9 @@ public class Cat062DataItemsTestAll_1
 
         Assert.That(trackUpdateAges.Name, Is.EqualTo("I062/290, System Track Update Ages"));
         Assert.That(trackUpdateAges.IsMandatory, Is.False);
-        Assert.That(trackUpdateAges.PsrAge.Psr, Is.EqualTo(63.75));
-        Assert.That(trackUpdateAges.SsrAge.Ssr, Is.EqualTo(6.5));
-        Assert.That(trackUpdateAges.ModeSAge.ModeS, Is.EqualTo(63.75));
+        Assert.That(trackUpdateAges.PsrAge.Psr, Is.EqualTo(2.5));
+        Assert.That(trackUpdateAges.SsrAge.Ssr, Is.EqualTo(2.5));
+        Assert.That(trackUpdateAges.ModeSAge.ModeS, Is.EqualTo(2.5));
         Assert.That(trackUpdateAges.AdscAge.Ads, Is.EqualTo(16383.75));
         Assert.That(trackUpdateAges.EsAge.Es, Is.EqualTo(63.75));
         Assert.That(trackUpdateAges.VdlAge.Vdl, Is.EqualTo(63.75));
@@ -297,7 +338,7 @@ public class Cat062DataItemsTestAll_1
 
         Assert.That(modeOfMovement.Trans, Is.EqualTo(I062200ModeOfMovement.TransTypes.ConstantCourse));
         Assert.That(modeOfMovement.Long, Is.EqualTo(I062200ModeOfMovement.LongTypes.ConstantGroundspeed));
-        Assert.That(modeOfMovement.Vert, Is.EqualTo(I062200ModeOfMovement.VertTypes.Climb));
+        Assert.That(modeOfMovement.Vert, Is.EqualTo(I062200ModeOfMovement.VertTypes.Level));
         Assert.That(modeOfMovement.Adf, Is.EqualTo(I062200ModeOfMovement.AdfTypes.NoAltitudeDiscrepancy));
     }
 
@@ -314,11 +355,23 @@ public class Cat062DataItemsTestAll_1
         Assert.That(trackDataAges.Name, Is.EqualTo("I062/295, Track Data Ages"));
         Assert.That(trackDataAges.IsMandatory, Is.False);
 
-        Assert.That(trackDataAges.Mfl.Mfl, Is.EqualTo(6.5));
-        Assert.That(trackDataAges.Md2.Md2, Is.EqualTo(6.5));
-        Assert.That(trackDataAges.Mda.Mda, Is.EqualTo(6.5));
-        Assert.That(trackDataAges.Bps, Is.Null);
-        Assert.That(trackDataAges.Emc, Is.Null);
+        Assert.That(trackDataAges.Mfl.Mfl, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Mda.Mda, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Mhg.Mhg, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Tas.Tas, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Fss.Fss, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Com.Com, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Bvr.Bvr, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Gvr.Gvr, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Ran.Ran, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Tar.Tar, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Tan.Tan, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Gsp.Gsp, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Iar.Iar, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Mac.Mac, Is.EqualTo(2.5));
+        Assert.That(trackDataAges.Bps.Bps, Is.EqualTo(2.5));
+
+        Assert.That(trackDataAges.Md2, Is.Null);
     }
 
     [Test]
@@ -334,7 +387,7 @@ public class Cat062DataItemsTestAll_1
         Assert.That(measuredFlightLevel.Name, Is.EqualTo("I062/136, Measured Flight Level"));
         Assert.That(measuredFlightLevel.IsMandatory, Is.False);
 
-        Assert.That(measuredFlightLevel.MeasuredFlightLevel, Is.EqualTo(113));
+        Assert.That(measuredFlightLevel.MeasuredFlightLevel, Is.EqualTo(389.75));
     }
 
     [Test]
@@ -349,7 +402,7 @@ public class Cat062DataItemsTestAll_1
 
         Assert.That(trackGeometricAltitude.Name, Is.EqualTo("I062/130, Calculated Track Geometric Altitude"));
         Assert.That(trackGeometricAltitude.IsMandatory, Is.False);
-        Assert.That(trackGeometricAltitude.CalculatedTrackGeometricAltitude, Is.EqualTo(11481.25));
+        Assert.That(trackGeometricAltitude.CalculatedTrackGeometricAltitude, Is.EqualTo(37956.25));
     }
 
     [Test]
@@ -365,7 +418,7 @@ public class Cat062DataItemsTestAll_1
         Assert.That(trackBarometricAltitude.Name, Is.EqualTo("I062/135, Calculated Track Barometric Altitude"));
         Assert.That(trackBarometricAltitude.IsMandatory, Is.False);
         Assert.That(trackBarometricAltitude.IsQnhCorrectionApplied, Is.False);
-        Assert.That(trackBarometricAltitude.CalculatedTrackBarometricAltitude, Is.EqualTo(114));
+        Assert.That(trackBarometricAltitude.CalculatedTrackBarometricAltitude, Is.EqualTo(390));
     }
 
     [Test]
@@ -380,34 +433,7 @@ public class Cat062DataItemsTestAll_1
 
         Assert.That(rateOfClimbDescent.Name, Is.EqualTo("I062/220, Calculated Rate Of Climb/Descent"));
         Assert.That(rateOfClimbDescent.IsMandatory, Is.False);
-        Assert.That(rateOfClimbDescent.RateOfClimbDescent, Is.EqualTo(1775));
-    }
-
-    [Test]
-    public void TestGenerateCat062DataItemsWithCambridgePixelSimulatorData_CheckTrackMode2Code()
-    {
-        _buffer = LoadCambridgePixelSimulatorData();
-
-        var cat062Header = new Cat062Header(_buffer);
-        var cat062DataItems = new Cat062DataItems(cat062Header, _buffer, cat062Header.DataBlockLength);
-
-        var trackMode2Code = cat062DataItems.TrackMode2Code;
-
-        Assert.That(trackMode2Code.Name, Is.EqualTo("I062/120, Track Mode 2 Code"));
-        Assert.That(trackMode2Code.IsMandatory, Is.False);
-
-        Assert.That(trackMode2Code.ReplyA4, Is.False);
-        Assert.That(trackMode2Code.ReplyA2, Is.False);
-        Assert.That(trackMode2Code.ReplyA1, Is.False);
-        Assert.That(trackMode2Code.ReplyB4, Is.False);
-        Assert.That(trackMode2Code.ReplyB2, Is.False);
-        Assert.That(trackMode2Code.ReplyB1, Is.False);
-        Assert.That(trackMode2Code.ReplyC4, Is.False);
-        Assert.That(trackMode2Code.ReplyC2, Is.False);
-        Assert.That(trackMode2Code.ReplyC1, Is.False);
-        Assert.That(trackMode2Code.ReplyD4, Is.False);
-        Assert.That(trackMode2Code.ReplyD2, Is.False);
-        Assert.That(trackMode2Code.ReplyD1, Is.False);
+        Assert.That(rateOfClimbDescent.RateOfClimbDescent, Is.EqualTo(0));
     }
 
     [Test]
@@ -424,7 +450,7 @@ public class Cat062DataItemsTestAll_1
         Assert.That(trackNumber.IsMandatory, Is.False);
 
         Assert.That(trackNumber.SystemUnitIdentification, Is.EqualTo(11));
-        Assert.That(trackNumber.SystemTrackNumber, Is.EqualTo(448));
+        Assert.That(trackNumber.SystemTrackNumber, Is.EqualTo(226));
         Assert.That(trackNumber.Fx, Is.False);
     }
 
@@ -441,22 +467,22 @@ public class Cat062DataItemsTestAll_1
         Assert.That(estimatedAccuracies.Name, Is.EqualTo("I062/500, Estimated Accuracies"));
         Assert.That(estimatedAccuracies.IsMandatory, Is.False);
 
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInCartesian.ApcXComponent, Is.EqualTo(209.5));
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInCartesian.ApcYComponent, Is.EqualTo(650.5));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInCartesian.ApcXComponent, Is.EqualTo(62.5));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInCartesian.ApcYComponent, Is.EqualTo(55));
 
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInWgs84.ApwLatitude, Is.EqualTo(0.0058472156526582).Within(0.0000000001));
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInWgs84.ApwLongitude, Is.EqualTo(0.00286996364593506).Within(0.0000000001));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInWgs84.ApwLatitude, Is.EqualTo(0.000493526458740234).Within(0.0000000001));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackPositionInWgs84.ApwLongitude, Is.EqualTo(0.000928044319152832).Within(0.0000000001));
 
         Assert.That(estimatedAccuracies.EstimatedAccuracyOfCalculatedTrackGeometricAltitude.Aga, Is.EqualTo(1593.75));
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfCalculatedTrackBarometricAltitude.Aba, Is.EqualTo(0.75));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfCalculatedTrackBarometricAltitude.Aba, Is.EqualTo(0.25));
 
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackVelocityInCartesian.AtvXComponent, Is.EqualTo(42));
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackVelocityInCartesian.AtvYComponent, Is.EqualTo(42));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackVelocityInCartesian.AtvXComponent, Is.EqualTo(4.25));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfTrackVelocityInCartesian.AtvYComponent, Is.EqualTo(4.5));
 
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfAccelerationInCartesian.AaXComponent, Is.EqualTo(0.75));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfAccelerationInCartesian.AaXComponent, Is.EqualTo(0));
         Assert.That(estimatedAccuracies.EstimatedAccuracyOfAccelerationInCartesian.AaYComponent, Is.EqualTo(0.5));
 
-        Assert.That(estimatedAccuracies.EstimatedAccuracyOfRateOfClimbDescent.Arc, Is.EqualTo(300));
+        Assert.That(estimatedAccuracies.EstimatedAccuracyOfRateOfClimbDescent.Arc, Is.EqualTo(137.5));
     }
 
     [Test]
@@ -475,29 +501,34 @@ public class Cat062DataItemsTestAll_1
         Assert.That(measuredInformation.HasSid, Is.True);
         Assert.That(measuredInformation.SensorIdentification, Is.Not.Null);
         Assert.That(measuredInformation.SensorIdentification.SystemAreaCode, Is.EqualTo(52));
-        Assert.That(measuredInformation.SensorIdentification.SystemIdentificationCode, Is.EqualTo(91));
-        
+        Assert.That(measuredInformation.SensorIdentification.SystemIdentificationCode, Is.EqualTo(49));
+
+        Assert.That(measuredInformation.HasPos, Is.True);
+        Assert.That(measuredInformation.MeasuredPosition, Is.Not.Null);
+        Assert.That(measuredInformation.MeasuredPosition.Rho, Is.EqualTo(143.91796875));
+        Assert.That(measuredInformation.MeasuredPosition.Theta, Is.EqualTo(43.08837890625));
+
         Assert.That(measuredInformation.HasMdc, Is.True);
         Assert.That(measuredInformation.LastMeasuredModeCCode, Is.Not.Null);
         Assert.That(measuredInformation.LastMeasuredModeCCode.IsCodeNotValidated, Is.False);
         Assert.That(measuredInformation.LastMeasuredModeCCode.IsGarbledCode, Is.False);
-        Assert.That(measuredInformation.LastMeasuredModeCCode.Mdc, Is.EqualTo(113));
+        Assert.That(measuredInformation.LastMeasuredModeCCode.Mdc, Is.EqualTo(389.75));
 
         Assert.That(measuredInformation.HasMda, Is.True);
         Assert.That(measuredInformation.LastMeasuredMode3ACode, Is.Not.Null);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.IsCodeNotValidated, Is.False);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.IsGarbledCode, Is.False);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.IsSmoothedMode3ACode, Is.False);
-        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyA4, Is.True);
-        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyA2, Is.False);
+        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyA4, Is.False);
+        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyA2, Is.True);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyA1, Is.True);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyB4, Is.True);
-        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyB2, Is.True);
+        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyB2, Is.False);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyB1, Is.False);
-        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyC4, Is.False);
+        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyC4, Is.True);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyC2, Is.False);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyC1, Is.False);
-        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyD4, Is.False);
+        Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyD4, Is.True);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyD2, Is.True);
         Assert.That(measuredInformation.LastMeasuredMode3ACode.ReplyD1, Is.False);
     }

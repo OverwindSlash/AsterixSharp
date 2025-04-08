@@ -6,7 +6,7 @@ namespace Cat062PacketParser.DataItems.SubFields.I062500;
 public class I062500Sf3EstimatedAccuracyOfTrackPositionInWgs84 : FixLengthDataItem
 {
     public const int EstimatedAccuracyOfTrackPositionInWgs84Length = 4;
-    public const double LSB = 180.0 / 33554432;
+    public const double LSB = 0.00000536441802978515625;
 
     public double ApwLatitude { get; private set; }
     public double ApwLongitude { get; private set; }

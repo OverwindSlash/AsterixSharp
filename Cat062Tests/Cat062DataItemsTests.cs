@@ -2,7 +2,7 @@ using Cat062PacketParser;
 using Cat062PacketParser.DataItems;
 using Cat062PacketParser.DataItems.SubFields.I062340;
 
-namespace Cat062HeaderTests;
+namespace Cat062DataItemsTests;
 
 public class Cat062DataItemsTests
 {
