@@ -143,7 +143,13 @@ public static class BitOperations
         var result = ConvertBitsBigEndianUnsigned(buffer, offset * BitsPerByte, 3 * BitsPerByte);
         return (uint)result;
     }
-    
+
+    public static uint Get4BytesUnSignedBigEndian(byte[] buffer, int offset)
+    {
+        var result = ConvertBitsBigEndianUnsigned(buffer, offset * BitsPerByte, 4 * BitsPerByte);
+        return (uint)result;
+    }
+
     public static string ConvertBytesTo6BitsAscii(byte[] targetBytes, int startIndex, int numChars)
     {
         if (targetBytes == null)
